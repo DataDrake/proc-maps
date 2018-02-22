@@ -16,6 +16,12 @@
 
 package data
 
+import (
+	"fmt"
+    "os"
+	"text/tabwriter"
+)
+
 // EntryMap maps unique IDs (DeviceID:Inode) to their respective FileEntry
 type EntryMap map[string]*FileEntry
 
@@ -29,6 +35,22 @@ type FileEntry struct {
 	Total uint64
 	// Sizes is a mapping of memory permissions to SizeEntries
 	Sizes map[string]*SizeEntry
+}
+
+// Print summarizes the stats related to a FileEntry
+func (f *FileEntry) Print() {
+	fmt.Println("File Information:\n")
+	fmt.Printf("Name   : %s\n", f.Name)
+	fmt.Printf("Size   : %sB\n", CanonicalSize(f.Total))
+	fmt.Printf("Weight : %sB\n", CanonicalSize(f.Weight))
+	fmt.Println("")
+
+	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
+	fmt.Fprintf(w, "%s\t%s\t%s\n", "Permissions", "Size (B)", "References")
+	for permission, entry := range f.Sizes {
+		fmt.Fprintf(w, "%s\t%s\t%d\n", permission, CanonicalSize(entry.Size), entry.Refs)
+	}
+	w.Flush()
 }
 
 // SizeEntry is a struct representing the size and frequency of use for a mapped region corresponding to FileEntry

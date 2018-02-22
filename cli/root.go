@@ -35,6 +35,7 @@ func init() {
 	}
 	// Setup the Sub-Commands
 	Root.RegisterCMD(&cmd.Help)
+	Root.RegisterCMD(&FileStats)
 	Root.RegisterCMD(&RankAllSizes)
 	Root.RegisterCMD(&RankSizes)
 }
