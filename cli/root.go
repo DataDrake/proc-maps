@@ -14,12 +14,27 @@
 // limitations under the License.
 //
 
-package main
+package cli
 
 import (
-    "github.com/DataDrake/proc-maps/cli"
+	"github.com/DataDrake/cli-ng/cmd"
 )
 
-func main() {
-    cli.Root.Run()
+// GlobalFlags contains the flags for all commands
+type GlobalFlags struct{}
+
+// Root is the main command for this application
+var Root *cmd.RootCMD
+
+func init() {
+	// Build Application
+	Root = &cmd.RootCMD{
+		Name:  "proc-maps",
+		Short: "Analyze the contents of /proc/[pid]/maps",
+		Flags: &GlobalFlags{},
+	}
+	// Setup the Sub-Commands
+	Root.RegisterCMD(&cmd.Help)
+	Root.RegisterCMD(&RankAllSizes)
+	Root.RegisterCMD(&RankSizes)
 }

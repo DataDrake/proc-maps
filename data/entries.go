@@ -16,6 +16,9 @@
 
 package data
 
+// EntryMap maps unique IDs (DeviceID:Inode) to their respective FileEntry
+type EntryMap map[string]*FileEntry
+
 // FileEntry is a struct representing a single mapped file
 type FileEntry struct {
 	// Name is the complete filepath of this file

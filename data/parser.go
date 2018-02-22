@@ -51,7 +51,7 @@ func init() {
 }
 
 // ParseMap gets all of the entries for a specific map
-func ParseMap(pid string, entries map[string]*FileEntry) {
+func ParseMap(pid string, entries EntryMap) {
 	maps, err := os.Open("/proc/" + pid + "/maps")
 	if err != nil {
 		log.Print(err)
@@ -105,9 +105,9 @@ func ParseMap(pid string, entries map[string]*FileEntry) {
 }
 
 // ParseMaps gathers all of the file entries from every process
-func ParseMaps() map[string]*FileEntry {
+func ParseMaps() EntryMap {
 
-	entries := make(map[string]*FileEntry)
+	entries := make(EntryMap)
 
 	files, err := ioutil.ReadDir("/proc")
 	if err != nil {

@@ -17,11 +17,42 @@
 package sorts
 
 import (
+	"fmt"
 	"github.com/DataDrake/proc-maps/data"
+	"os"
+	"sort"
+	"text/tabwriter"
 )
 
 // BySize is a list of FileEntries that can be sorted by size
 type BySize []*data.FileEntry
+
+// NewBySize translates an EntryMAp into a BySize
+func NewBySize(entries data.EntryMap) BySize {
+	s := make(BySize, len(entries))
+	i := 0
+	for _, entry := range entries {
+		s[i] = entry
+		i++
+	}
+	sort.Sort(s)
+	return s
+}
+
+// Print writes out this list as a table, in sorted order
+func (b BySize) Print() {
+	var total uint64
+	for _, entry := range b {
+		total += entry.Total
+	}
+	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", "Rank", "Size (B)", "Cumulative Size (B)", "Filename")
+	for i, entry := range b {
+		fmt.Fprintf(w, "%d\t%s\t%s\t%s\n", i+1, data.CanonicalSize(entry.Total), data.CanonicalSize(total), entry.Name)
+		total -= entry.Total
+	}
+	w.Flush()
+}
 
 // Len returns the length of the list
 func (b BySize) Len() int {
