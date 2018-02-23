@@ -18,7 +18,7 @@ package data
 
 import (
 	"fmt"
-    "os"
+	"os"
 	"text/tabwriter"
 )
 
@@ -39,7 +39,7 @@ type FileEntry struct {
 
 // Print summarizes the stats related to a FileEntry
 func (f *FileEntry) Print() {
-	fmt.Println("File Information:\n")
+	fmt.Printf("File Information:\n\n")
 	fmt.Printf("Name   : %s\n", f.Name)
 	fmt.Printf("Size   : %sB\n", CanonicalSize(f.Total))
 	fmt.Printf("Weight : %sB\n", CanonicalSize(f.Weight))
