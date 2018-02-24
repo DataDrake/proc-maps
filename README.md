@@ -96,7 +96,7 @@ The `file-stats` subcommand reads through the maps of every running process and 
 **Command**
 ```bash
 sudo proc-maps fs /usr/lib64/libffi.so.6.0.4
-sudo proc-maps rile-stats /usr/lib64/libffi.so.6.0.4
+sudo proc-maps file-stats /usr/lib64/libffi.so.6.0.4
 ```
 
 **Example**
