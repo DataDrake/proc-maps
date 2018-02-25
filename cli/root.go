@@ -20,9 +20,6 @@ import (
 	"github.com/DataDrake/cli-ng/cmd"
 )
 
-// GlobalFlags contains the flags for all commands
-type GlobalFlags struct{}
-
 // Root is the main command for this application
 var Root *cmd.RootCMD
 
@@ -31,7 +28,6 @@ func init() {
 	Root = &cmd.RootCMD{
 		Name:  "proc-maps",
 		Short: "Analyze the contents of /proc/[pid]/maps",
-		Flags: &GlobalFlags{},
 	}
 	// Setup the Sub-Commands
 	Root.RegisterCMD(&cmd.Help)

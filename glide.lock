@@ -1,10 +1,10 @@
 hash: a7940cea31f9159ff11b8590c2aab51c2fecbc478e993a9df46f884da18f347c
-updated: 2018-02-22T10:32:35.314450592-05:00
+updated: 2018-02-25T13:47:17.106936759-05:00
 imports:
 - name: github.com/codegangsta/cli
   version: cfb38830724cc34fedffe9a2a29fb54fa9169cd1
 - name: github.com/DataDrake/cli-ng
-  version: 88ed6a27f5ac4f6a5a336ed2c5a4e9ad7e4ce423
+  version: 052229dbaf320c21a1a9ec185db08f712b28f407
   subpackages:
   - cmd
   - options
@@ -43,5 +43,5 @@ imports:
 - name: github.com/mitchellh/go-homedir
   version: b8bc1bf767474819792c23f32d8286a45736f1c6
 - name: gopkg.in/yaml.v2
-  version: d670f9405373e636a5a2765eea47fac0c9bc91a4
+  version: 7f97868eec74b32b0982dd158a51a446d1da7eb5
 testImports: []
