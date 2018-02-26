@@ -33,13 +33,19 @@ setup:
 	@if [ ! -d $(PROJROOT)/$(PKGNAME) ]; then ln -s $(shell pwd) $(PROJROOT)/$(PKGNAME); fi
 	@$(call task,Getting dependencies...)
 	@go get github.com/Masterminds/glide
-	@$(GOBIN)/glide up
+	@$(GOBIN)/glide install
 	@$(call pass,SETUP)
 
 test:
 	@$(call stage,TEST)
 	@for d in $(TESTPKGS); do $(GOCC) test -cover ./$$d/... || exit 1; done
 	@$(call pass,TEST)
+
+update:
+	@$(call stage,UPDATE)
+	@$(call task,Updating dependencies...)
+	@$(GOBIN)/glide up
+	@$(call pass,UPDATE)
 
 validate: golint-setup
 	@$(call stage,FORMAT)
