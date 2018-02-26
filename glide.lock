@@ -1,10 +1,10 @@
 hash: a7940cea31f9159ff11b8590c2aab51c2fecbc478e993a9df46f884da18f347c
-updated: 2018-02-25T13:47:17.106936759-05:00
+updated: 2018-02-26T07:17:47.087956168-05:00
 imports:
 - name: github.com/codegangsta/cli
   version: cfb38830724cc34fedffe9a2a29fb54fa9169cd1
 - name: github.com/DataDrake/cli-ng
-  version: 052229dbaf320c21a1a9ec185db08f712b28f407
+  version: 893a48a6183e2e7040fefc707487b3e423ffff3e
   subpackages:
   - cmd
   - options
