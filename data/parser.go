@@ -18,7 +18,6 @@ package data
 
 import (
 	"bufio"
-	"bytes"
 	"io"
 	"io/ioutil"
 	"log"
@@ -60,26 +59,26 @@ func ParseMap(pid string, entries EntryMap) {
 	line, _, err := buff.ReadLine()
 	// For each line
 	for err == nil {
-		raw := rowMatch.FindSubmatch(line)
+		raw := rowMatch.FindStringSubmatch(string(line))
 		// IF the line matches and isn't the root Device ID
-		if raw != nil && !bytes.Equal(raw[5], []byte("00:00")) {
+		if raw != nil && (raw[5] != "00:00") {
 			// Generate Key <DeviceID>:<Inode>
-			key := string(raw[5]) + ":" + string(raw[6])
+			key := raw[5] + ":" + raw[6]
 			// If key already exists
 			if entry := entries[key]; entry != nil {
-				if size := entry.Sizes[string(raw[3])]; size != nil {
+				if size := entry.Sizes[raw[3]]; size != nil {
 					size.Refs++
 					entry.Weight += size.Size
 				} else {
-					entry.Increment(string(raw[1]), string(raw[2]), string(raw[3]))
+					entry.Increment(raw[1], raw[2], raw[3])
 				}
 			} else {
 				// Create new entry
 				entry := &FileEntry{
-					Name:  string(raw[7]),
+					Name:  raw[7],
 					Sizes: make(map[string]*SizeEntry),
 				}
-				entry.Increment(string(raw[1]), string(raw[2]), string(raw[3]))
+				entry.Increment(raw[1], raw[2], raw[3])
 				// Store new Entry
 				entries[key] = entry
 			}
