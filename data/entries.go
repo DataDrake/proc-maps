@@ -19,7 +19,7 @@ package data
 import (
 	"fmt"
 	"os"
-    "strconv"
+	"strconv"
 	"text/tabwriter"
 )
 
@@ -40,16 +40,16 @@ type FileEntry struct {
 
 // Increment entry by new address range
 func (f *FileEntry) Increment(startAddress, endAddress, permissions string) {
-    start, err := strconv.ParseUint(startAddress, 16, 64)
-    end, err := strconv.ParseUint(endAddress, 16, 64)
-    if err == nil {
-       f.Sizes[permissions] = &SizeEntry{
-            Size: end - start,
-            Refs: 1,
-       }
-       f.Total += end - start
-       f.Weight += end - start
-    }
+	start, err := strconv.ParseUint(startAddress, 16, 64)
+	end, err := strconv.ParseUint(endAddress, 16, 64)
+	if err == nil {
+		f.Sizes[permissions] = &SizeEntry{
+			Size: end - start,
+			Refs: 1,
+		}
+		f.Total += end - start
+		f.Weight += end - start
+	}
 }
 
 // Print summarizes the stats related to a FileEntry

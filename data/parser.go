@@ -58,29 +58,29 @@ func ParseMap(pid string, entries EntryMap) {
 	defer maps.Close()
 	buff := bufio.NewReader(maps)
 	line, _, err := buff.ReadLine()
-    // For each line
+	// For each line
 	for err == nil {
 		raw := rowMatch.FindSubmatch(line)
-        // IF the line matches and isn't the root Device ID
+		// IF the line matches and isn't the root Device ID
 		if raw != nil && !bytes.Equal(raw[5], []byte("00:00")) {
-            // Generate Key <DeviceID>:<Inode>
+			// Generate Key <DeviceID>:<Inode>
 			key := string(raw[5]) + ":" + string(raw[6])
-            // If key already exists
+			// If key already exists
 			if entry := entries[key]; entry != nil {
 				if size := entry.Sizes[string(raw[3])]; size != nil {
 					size.Refs++
 					entry.Weight += size.Size
 				} else {
-                    entry.Increment(string(raw[1]), string(raw[2]), string(raw[3]))
+					entry.Increment(string(raw[1]), string(raw[2]), string(raw[3]))
 				}
 			} else {
-                // Create new entry
+				// Create new entry
 				entry := &FileEntry{
 					Name:  string(raw[7]),
 					Sizes: make(map[string]*SizeEntry),
 				}
-                entry.Increment(string(raw[1]), string(raw[2]), string(raw[3]))
-                // Store new Entry
+				entry.Increment(string(raw[1]), string(raw[2]), string(raw[3]))
+				// Store new Entry
 				entries[key] = entry
 			}
 		}
