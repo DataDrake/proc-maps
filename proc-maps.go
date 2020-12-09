@@ -1,5 +1,5 @@
 //
-// Copyright 2018 Bryan T. Meyers <bmeyers@datadrake.com>
+// Copyright 2018-2020 Bryan T. Meyers <bmeyers@datadrake.com>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,9 +17,14 @@
 package main
 
 import (
-    "github.com/DataDrake/proc-maps/cli"
+	"github.com/DataDrake/proc-maps/cli"
+	"os"
 )
 
 func main() {
-    cli.Root.Run()
+	if id := os.Getuid(); id != 0 {
+		println("Must be root user to run")
+		os.Exit(1)
+	}
+	cli.Root.Run()
 }

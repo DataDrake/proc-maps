@@ -1,5 +1,5 @@
 //
-// Copyright 2018 Bryan T. Meyers <bmeyers@datadrake.com>
+// Copyright 2018-2020 Bryan T. Meyers <bmeyers@datadrake.com>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -44,8 +44,23 @@ var pidMatch *regexp.Regexp
 var rowMatch *regexp.Regexp
 
 func init() {
-	pidMatch = regexp.MustCompile("\\d+")
-	rowMatch = regexp.MustCompile("^(\\w+)-(\\w+)\\s+(\\S+)\\s+(\\d+)\\s+(\\S+)\\s+(\\d+)\\s*(\\S+)?$")
+	pidMatch = regexp.MustCompile(`\d+`)
+	rowMatch = regexp.MustCompile(`^(\w+)-(\w+)\s+(\S+)\s+(\d+)\s+(\S+)\s+(\d+)\s*(\S+)?$`)
+}
+
+// ParseMaps gathers all of the file entries from every process
+func ParseMaps() EntryMap {
+	entries := make(EntryMap)
+	files, err := ioutil.ReadDir("/proc")
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, file := range files {
+		if file.IsDir() && pidMatch.MatchString(file.Name()) {
+			ParseMap(file.Name(), entries)
+		}
+	}
+	return entries
 }
 
 // ParseMap gets all of the entries for a specific map
@@ -59,30 +74,7 @@ func ParseMap(pid string, entries EntryMap) {
 	line, _, err := buff.ReadLine()
 	// For each line
 	for err == nil {
-		raw := rowMatch.FindStringSubmatch(string(line))
-		// IF the line matches and isn't the root Device ID
-		if raw != nil && (raw[5] != "00:00") {
-			// Generate Key <DeviceID>:<Inode>
-			key := raw[5] + ":" + raw[6]
-			// If key already exists
-			if entry := entries[key]; entry != nil {
-				if size := entry.Sizes[raw[3]]; size != nil {
-					size.Refs++
-					entry.Weight += size.Size
-				} else {
-					entry.Increment(raw[1], raw[2], raw[3])
-				}
-			} else {
-				// Create new entry
-				entry := &FileEntry{
-					Name:  raw[7],
-					Sizes: make(map[string]*SizeEntry),
-				}
-				entry.Increment(raw[1], raw[2], raw[3])
-				// Store new Entry
-				entries[key] = entry
-			}
-		}
+		parseRow(line, entries)
 		line, _, err = buff.ReadLine()
 	}
 	if err != nil && err != io.EOF {
@@ -90,20 +82,29 @@ func ParseMap(pid string, entries EntryMap) {
 	}
 }
 
-// ParseMaps gathers all of the file entries from every process
-func ParseMaps() EntryMap {
-
-	entries := make(EntryMap)
-
-	files, err := ioutil.ReadDir("/proc")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for _, file := range files {
-		if file.IsDir() && pidMatch.MatchString(file.Name()) {
-			ParseMap(file.Name(), entries)
+func parseRow(line []byte, entries EntryMap) {
+	raw := rowMatch.FindStringSubmatch(string(line))
+	// IF the line matches and isn't the root Device ID
+	if raw != nil && (raw[5] != "00:00") {
+		// Generate Key <DeviceID>:<Inode>
+		key := raw[5] + ":" + raw[6]
+		// If key already exists
+		if entry := entries[key]; entry != nil {
+			if size := entry.Sizes[raw[3]]; size != nil {
+				size.Refs++
+				entry.Weight += size.Size
+			} else {
+				entry.Increment(raw[1], raw[2], raw[3])
+			}
+		} else {
+			// Create new entry
+			entry := &FileEntry{
+				Name:  raw[7],
+				Sizes: make(map[string]*SizeEntry),
+			}
+			entry.Increment(raw[1], raw[2], raw[3])
+			// Store new Entry
+			entries[key] = entry
 		}
 	}
-	return entries
 }

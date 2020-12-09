@@ -116,7 +116,7 @@ rw-p          4K         80
 
 ### License
 
-Copyright 2018 Bryan T. Meyers <bmeyers@datadrake.com>
+Copyright 2018-2020 Bryan T. Meyers <bmeyers@datadrake.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

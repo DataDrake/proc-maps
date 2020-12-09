@@ -1,5 +1,5 @@
 //
-// Copyright 2018 Bryan T. Meyers <bmeyers@datadrake.com>
+// Copyright 2018-2020 Bryan T. Meyers <bmeyers@datadrake.com>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,15 +41,19 @@ type FileEntry struct {
 // Increment entry by new address range
 func (f *FileEntry) Increment(startAddress, endAddress, permissions string) {
 	start, err := strconv.ParseUint(startAddress, 16, 64)
-	end, err := strconv.ParseUint(endAddress, 16, 64)
-	if err == nil {
-		f.Sizes[permissions] = &SizeEntry{
-			Size: end - start,
-			Refs: 1,
-		}
-		f.Total += end - start
-		f.Weight += end - start
+	if err != nil {
+		panic(err)
 	}
+	end, err := strconv.ParseUint(endAddress, 16, 64)
+	if err != nil {
+		panic(err)
+	}
+	f.Sizes[permissions] = &SizeEntry{
+		Size: end - start,
+		Refs: 1,
+	}
+	f.Total += end - start
+	f.Weight += end - start
 }
 
 // Print summarizes the stats related to a FileEntry
