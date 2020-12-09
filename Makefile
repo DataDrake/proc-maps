@@ -5,7 +5,7 @@ PROJREPO = github.com/DataDrake
 include Makefile.golang
 include Makefile.waterlog
 
-MEGACHECK = $(GOBIN)/megacheck
+MEGACHECK = $(GOBIN)/staticcheck
 GOLINT    = $(GOBIN)/golint -set_exit_status
 
 DESTDIR ?=
@@ -39,7 +39,7 @@ validate: setup-deps
 	@$(call stage,VET)
 	@$(call task,Running 'go vet'...)
 	@cd $(GOPROJROOT)/$(PKGNAME); for d in $(SUBPKGS); do $(GOVET) ./... && exit 1; done || $(GOVET) $(PKGNAME).go || exit 1
-	@$(call task,Running 'megacheck'...)
+	@$(call task,Running 'staticcheck'...)
 	@for d in $(SUBPKGS); do $(MEGACHECK) ./$$d || exit 1; done || $(MEGACHECK) $(PKGNAME).go || exit 1
 	@$(call pass,VET)
 	@$(call stage,LINT)
@@ -57,14 +57,14 @@ setup-deps:
 	    $(GOINSTALL) ./...; \
 	    popd; \
 	fi
-	@if [ ! -e $(GOBIN)/megacheck ]; then \
-	    $(call task,Installing megacheck...); \
-	    $(GOGET) honnef.co/go/tools/cmd/megacheck; \
+	@if [ ! -e $(GOBIN)/staticcheck ]; then \
+	    $(call task,Installing staticcheck...); \
+	    $(GOGET) honnef.co/go/tools/cmd/staticcheck; \
 	fi
 	@if [ -d build/src/honnef.co ]; then rm -rf build/src/honnef.co; fi
 	@if [ ! -e $(GOBIN)/golint ]; then \
 	    $(call task,Installing golint...); \
-	    $(GOGET) github.com/golang/lint/golint; \
+	    $(GOGET) golang.org/x/lint/golint; \
 	fi
 	@if [ -d build/src/golang.org ]; then rm -rf build/src/golang.org; fi
 	@if [ -d build/src/github.com/golang ]; then rm -rf build/src/github.com/golang; fi
